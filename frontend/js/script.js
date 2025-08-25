@@ -1,10 +1,9 @@
-const centro = [-4.0432, -39.4545]; // General Sampaio
+const centro = [-4.0432, -39.4545];
 const limites = L.latLngBounds(
   L.latLng(-4.08, -39.50),
   L.latLng(-4.00, -39.40)
 );
 
-// Inicializa o mapa
 let map = L.map("map", {
   center: centro,
   zoom: 14,
@@ -17,68 +16,80 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 }).addTo(map);
 
 let markers = [];
+let empreendedores = [];
 
-// Função para buscar dados da API e renderizar mapa + cards
-const fetchAndRender = () => {
-  const busca = document.getElementById('search').value;
+const cardsContainer = document.getElementById("cards");
+
+// Função para renderizar mapa e cards
+function renderizar(data) {
+  // Limpa marcadores e cards antigos
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  cardsContainer.innerHTML = "";
+
+  data.forEach(emp => {
+    const lat = parseFloat(emp.lat) || centro[0];
+    const lng = parseFloat(emp.lng) || centro[1];
+
+    const marker = L.marker([lat, lng])
+      .addTo(map)
+      .bindPopup(`<b>${emp.nome}</b><br>${emp.descricao || 'Não informado'}`);
+    marker.on('click', () => window.location.href = `negocio.html?id=${emp.id}`);
+    markers.push(marker);
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `
+      <img src="${emp.imagem || 'img/default.png'}" alt="${emp.nome}">
+      <div class="card-content">
+        <h3>${emp.nome}</h3>
+        <p>${emp.descricao || 'Não informado'}</p>
+        <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
+      </div>
+    `;
+    card.onclick = () => window.location.href = `negocio.html?id=${emp.id}`;
+    cardsContainer.appendChild(card);
+  });
+}
+
+// Função de filtro local
+function filtrar() {
+  const busca = document.getElementById('search').value.toLowerCase();
   const categoria = document.getElementById('categoriaFilter').value;
   const atendimento = document.getElementById('atendimentoFilter').value;
 
-  const url = `http://localhost:3000/api/empreendedores?busca=${encodeURIComponent(busca)}&categoria=${encodeURIComponent(categoria)}&atendimento=${encodeURIComponent(atendimento)}`;
+  const filtrados = empreendedores.filter(emp => {
+    const nomeDesc = (emp.nome + " " + (emp.descricao || "")).toLowerCase();
+    const nomeMatch = nomeDesc.includes(busca);
+    const catMatch = categoria ? emp.categoria === categoria : true;
+    const atendMatch = atendimento ? emp.atendimento === atendimento : true;
+    return nomeMatch && catMatch && atendMatch;
+  });
 
-  const cardsContainer = document.getElementById("cards");
+  renderizar(filtrados);
+}
 
-  fetch(url)
-    .then(res => {
-      if (!res.ok) throw new Error("Erro ao acessar a API");
-      return res.json();
-    })
-    .then(data => {
-      // Remove marcadores antigos
-      markers.forEach(m => map.removeLayer(m));
-      markers = [];
+// Carrega todos os empreendedores do backend
+async function carregarEmpreendedores() {
+  try {
+    const res = await fetch("http://localhost:3000/api/empreendedores");
+    if (!res.ok) throw new Error("Erro ao carregar empreendedores");
+    empreendedores = await res.json();
+    renderizar(empreendedores);
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao carregar dados. Verifique se o backend está rodando.");
+  }
+}
 
-      cardsContainer.innerHTML = "";
-
-      if (!Array.isArray(data) || data.length === 0) {
-        cardsContainer.innerHTML = "<p>Nenhuma empresa cadastrada.</p>";
-        return;
-      }
-
-      data.forEach(emp => {
-        // Adiciona marcador no mapa
-        const lat = parseFloat(emp.lat) || centro[0];
-        const lng = parseFloat(emp.lng) || centro[1];
-        const m = L.marker([lat, lng]).addTo(map)
-          .bindPopup(`<b>${emp.nome}</b><br>${emp.produto || 'Não informado'}`);
-        m.on('click', () => window.location.href = `negocio.html?id=${emp.id}`);
-        markers.push(m);
-
-        // Cria card clicável
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.innerHTML = `
-          <img src="${emp.imagem || 'img/default.png'}" alt="${emp.nome}">
-          <div class="card-content">
-            <h3>${emp.nome}</h3>
-            <p>${emp.produto || 'Não informado'}</p>
-            <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
-          </div>
-        `;
-        card.onclick = () => window.location.href = `negocio.html?id=${emp.id}`;
-        cardsContainer.appendChild(card);
-      });
-    })
-    .catch(err => {
-      console.error("Erro ao carregar empresas:", err);
-    });
-};
-
-// Eventos de filtro
-document.getElementById("filterBtn").addEventListener("click", fetchAndRender);
+// Eventos
+document.getElementById("filterBtn").addEventListener("click", filtrar);
 document.getElementById("search").addEventListener("keydown", e => {
-  if (e.key === "Enter") fetchAndRender();
+  if (e.key === "Enter") {
+    e.preventDefault();
+    filtrar();
+  }
 });
 
-// Carrega os dados ao abrir a página
-window.onload = fetchAndRender;
+// Inicialização
+window.onload = carregarEmpreendedores;

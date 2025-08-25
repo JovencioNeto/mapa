@@ -26,7 +26,7 @@ label {
 
 header{
     display: flex;
-    justify-content: space-between; /* título à esquerda, botão à direita */
+    justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     background-color: #2d89ef;
@@ -39,6 +39,7 @@ input[type="file"],
 input[type="email"],
 input[type="time"],
 input[type="url"],
+input[type="tel"],
 textarea,
 select {
   width: 97%;

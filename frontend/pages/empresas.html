@@ -8,29 +8,28 @@
   <link rel="stylesheet" href="../css/empresas.css" />
 </head>
 <body>
+  <body>
   <header>
     <h1>Lista de Empresas Cadastradas</h1>
     <button type="button" onclick="window.location.href='../index.html'">Voltar para o Mapa</button>
   </header>
 
-  <main>
-    <section id="cards">
-      <p>Carregando empresas...</p>
-    </section>
+  <main id="cards">
+    <p>Carregando empresas...</p>
   </main>
 
   <script>
     const cardsContainer = document.getElementById("cards");
 
-    fetch("/api/empreendedores")
-      .then(response => {
-        if (!response.ok) throw new Error("Erro na resposta da API");
-        return response.json();
-      })
-      .then(empresas => {
+    async function carregarEmpresas() {
+      try {
+        const res = await fetch("http://localhost:3000/api/empreendedores");
+        if (!res.ok) throw new Error("Erro ao acessar a API");
+        const empresas = await res.json();
+
         cardsContainer.innerHTML = "";
 
-        if (!Array.isArray(empresas) || empresas.length === 0) {
+        if (empresas.length === 0) {
           cardsContainer.innerHTML = "<p>Nenhuma empresa cadastrada.</p>";
           return;
         }
@@ -38,25 +37,29 @@
         empresas.forEach(emp => {
           const card = document.createElement("div");
           card.classList.add("card");
+
           card.innerHTML = `
-            <img src="${emp.imagem || 'img/default.png'}" alt="${emp.nome}" />
+            <img src="${emp.imagem ? 'uploads/' + emp.imagem : 'img/default.png'}" alt="${emp.nome}" />
             <div class="card-content">
               <h3>${emp.nome}</h3>
-              <p>${emp.produto || 'Não informado'}</p>
+              <p>${emp.descricao || 'Descrição não informada'}</p>
               <p><strong>Categoria:</strong> ${emp.categoria || 'Não informado'}</p>
               <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
             </div>
           `;
 
-          card.style.cursor = "pointer";
           card.onclick = () => window.location.href = `negocio.html?id=${emp.id}`;
           cardsContainer.appendChild(card);
         });
-      })
-      .catch(err => {
-        console.error("Erro ao carregar empresas:", err);
+      } catch (err) {
+        console.error(err);
         cardsContainer.innerHTML = "<p>Erro ao carregar as empresas.</p>";
-      });
+      }
+    }
+
+    window.onload = carregarEmpresas;
   </script>
+</body>
+
 </body>
 </html>

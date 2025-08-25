@@ -6,6 +6,7 @@
   <title>Cadastro de Empreendedor</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="../css/cadastro.css" />
+  <script src="../js/cadastro.js"></script>
   <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
 </head>
 <body>
@@ -30,12 +31,7 @@
     </select>
 
     <label for="imagem">Arquivo da Foto/Logo *</label>
-    <input
-      type="file"
-      id="imagem"
-      name="imagem"
-      required
-    />
+    <input type="file" id="imagem" name="imagem" accept="image/*" required />
 
     <label for="descricao">Descrição curta *</label>
     <textarea
@@ -46,43 +42,42 @@
       required
     ></textarea>
 
-    <label>Localização no mapa</label>
-    <div id="map"></div>
+    <label>Localização no mapa *</label>
+    <div id="map" style="height:300px; border:1px solid #ccc;"></div>
     <input type="hidden" id="lat" name="lat" required />
     <input type="hidden" id="lng" name="lng" required />
 
     <label for="endereco">Endereço (opcional)</label>
     <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro..." />
 
-    <label for="email">Email</label>
+    <label for="email">Email *</label>
     <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" required />
 
-    <label for="telefone">Telefone</label>
-    <input type="text" id="telefone" name="telefone" placeholder="(xx) xxxx-xxxx" required />
+    <label for="telefone">Telefone *</label>
+    <input type="tel" id="telefone" name="telefone" placeholder="(xx) xxxx-xxxx" required />
 
     <label for="whatsapp">WhatsApp (opcional)</label>
-    <input type="text" id="whatsapp" name="whatsapp" placeholder="(xx) 9xxxx-xxxx" />
+    <input type="tel" id="whatsapp" name="whatsapp" placeholder="(xx) 9xxxx-xxxx" />
 
     <label for="instagram">Instagram (opcional)</label>
     <input type="text" id="instagram" name="instagram" placeholder="@usuario" />
 
     <label>Dias de funcionamento *</label>
-<div id="diasFuncionamento" style="display:flex; gap:10px; flex-wrap: wrap;">
-  <label><input type="checkbox" name="dias" value="Segunda" /> Seg</label>
-  <label><input type="checkbox" name="dias" value="Terça" /> Ter</label>
-  <label><input type="checkbox" name="dias" value="Quarta" /> Qua</label>
-  <label><input type="checkbox" name="dias" value="Quinta" /> Qui</label>
-  <label><input type="checkbox" name="dias" value="Sexta" /> Sex</label>
-  <label><input type="checkbox" name="dias" value="Sábado" /> Sáb</label>
-  <label><input type="checkbox" name="dias" value="Domingo" /> Dom</label>
-</div>
+    <div id="diasFuncionamento" style="display:flex; gap:10px; flex-wrap: wrap;">
+      <label><input type="checkbox" name="dias" value="Segunda" /> Seg</label>
+      <label><input type="checkbox" name="dias" value="Terça" /> Ter</label>
+      <label><input type="checkbox" name="dias" value="Quarta" /> Qua</label>
+      <label><input type="checkbox" name="dias" value="Quinta" /> Qui</label>
+      <label><input type="checkbox" name="dias" value="Sexta" /> Sex</label>
+      <label><input type="checkbox" name="dias" value="Sábado" /> Sáb</label>
+      <label><input type="checkbox" name="dias" value="Domingo" /> Dom</label>
+    </div>
 
-<label>Horário de funcionamento *</label>
-<div style="display:flex; gap:10px;">
-  <input type="time" id="horaInicio" name="horaInicio" required />
-  <input type="time" id="horaFim" name="horaFim" required />
-</div>
-
+    <label>Horário de funcionamento *</label>
+    <div style="display:flex; gap:10px;">
+      <input type="time" id="horaInicio" name="horaInicio" required />
+      <input type="time" id="horaFim" name="horaFim" required />
+    </div>
 
     <label>
       <input type="checkbox" id="lojaVirtualCheck" name="lojaVirtualCheck" />
@@ -105,17 +100,14 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Inicializar o mapa centrado em General Sampaio - CE
+    // Inicializar mapa
     const centro = [-4.0432, -39.4545];
     const map = L.map("map").setView(centro, 14);
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // Marcador para a localização escolhida (invisível até o usuário clicar)
     let marker;
-
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
       if (marker) {
@@ -127,7 +119,7 @@
       document.getElementById("lng").value = lng;
     });
 
-    // Mostrar/ocultar campo link loja virtual
+    // Mostrar/ocultar campo loja virtual
     const lojaCheck = document.getElementById("lojaVirtualCheck");
     const linkLojaInput = document.getElementById("linkLojaVirtual");
     const labelLinkLoja = document.getElementById("labelLinkLoja");
@@ -145,58 +137,93 @@
       }
     });
 
+    // Máscara simples para telefone/whatsapp
+    function aplicarMascaraTelefone(input) {
+      input.addEventListener("input", () => {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 10) {
+          v = v.replace(/(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+        } else if (v.length > 6) {
+          v = v.replace(/(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+        } else if (v.length > 2) {
+          v = v.replace(/(\d{2})(\d{0,5})/, "($1) $2");
+        } else {
+          v = v.replace(/(\d*)/, "($1");
+        }
+        input.value = v;
+      });
+    }
+    aplicarMascaraTelefone(document.getElementById("telefone"));
+    aplicarMascaraTelefone(document.getElementById("whatsapp"));
+
+    // Validações adicionais
+    function validarEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    function validarURL(url) {
+      return /^https?:\/\/.+/.test(url);
+    }
+
     // Enviar formulário
     document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+      e.preventDefault();
+      const btn = document.getElementById("buttonSubmit");
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
 
-  const diasSelecionados = Array.from(document.querySelectorAll('input[name="dias"]:checked')).map(c => c.value);
+      const diasSelecionados = Array.from(document.querySelectorAll('input[name="dias"]:checked')).map(c => c.value);
 
-  const data = {
-    nome: e.target.nome.value.trim(),
-    categoria: e.target.categoria.value,
-    imagem: e.target.imagem.value.trim(),
-    descricao: e.target.descricao.value.trim(),
-    lat: parseFloat(e.target.lat.value),
-    lng: parseFloat(e.target.lng.value),
-    endereco: e.target.endereco.value.trim(),
-    email: e.target.email.value.trim(),
-    telefone: e.target.telefone.value.trim(),
-    whatsapp: e.target.whatsapp.value.trim(),
-    instagram: e.target.instagram.value.trim(),
-    horarioInicio: e.target.horaInicio.value,
-    horarioFim: e.target.horaFim.value,
-    diasFuncionamento: diasSelecionados,
-    atendimento: "fisico", // Você pode adaptar para um select, se quiser
-    lojaVirtual: e.target.lojaVirtualCheck.checked,
-    linkLojaVirtual: e.target.linkLojaVirtual.value.trim(),
-    fotosExtras: [] // vazio por enquanto, pode implementar upload depois
-  };
+      const horaInicio = e.target.horaInicio.value;
+      const horaFim = e.target.horaFim.value;
 
-  if (!data.lat || !data.lng) {
-    alert("Por favor, clique no mapa para marcar a localização.");
-    return;
-  }
+      if (horaFim <= horaInicio) {
+        alert("O horário final deve ser maior que o horário inicial.");
+        btn.disabled = false; btn.textContent = "Cadastrar";
+        return;
+      }
 
-  try {
-    const res = await fetch("http://localhost:3000/api/empreendedores", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      if (!e.target.lat.value || !e.target.lng.value) {
+        alert("Por favor, clique no mapa para marcar a localização.");
+        btn.disabled = false; btn.textContent = "Cadastrar";
+        return;
+      }
+
+      if (!validarEmail(e.target.email.value.trim())) {
+        alert("Digite um email válido.");
+        btn.disabled = false; btn.textContent = "Cadastrar";
+        return;
+      }
+
+      if (lojaCheck.checked && !validarURL(linkLojaInput.value.trim())) {
+        alert("Digite uma URL válida para a loja virtual.");
+        btn.disabled = false; btn.textContent = "Cadastrar";
+        return;
+      }
+
+      // Preparar dados com FormData (inclui imagem)
+      const formData = new FormData(e.target);
+      formData.append("diasFuncionamento", JSON.stringify(diasSelecionados));
+
+      try {
+        const res = await fetch("http://localhost:3000/api/empreendedores", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (res.ok) {
+          alert("Cadastro realizado com sucesso!");
+          window.location.href = "index.html";
+        } else {
+          const error = await res.json();
+          alert("Erro ao cadastrar: " + (error.error || "Tente novamente."));
+        }
+      } catch (err) {
+        alert("Erro de conexão. Tente novamente mais tarde.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Cadastrar";
+      }
     });
-
-    if (res.ok) {
-      alert("Cadastro realizado com sucesso!");
-      window.location.href = "index.html";
-    } else {
-      const error = await res.json();
-      alert("Erro ao cadastrar: " + (error.error || "Tente novamente."));
-    }
-  } catch (err) {
-    alert("Erro de conexão. Tente novamente mais tarde.");
-  }
-});
   </script>
 </body>
 </html>
