@@ -18,14 +18,11 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 let markers = [];
 let empreendedores = [];
 
-const cardsContainer = document.getElementById("cards");
-
-// Função para renderizar mapa e cards
+// Função para renderizar só os marcadores no mapa
 function renderizar(data) {
-  // Limpa marcadores e cards antigos
+  // Limpa marcadores antigos
   markers.forEach(m => map.removeLayer(m));
   markers = [];
-  cardsContainer.innerHTML = "";
 
   data.forEach(emp => {
     const lat = parseFloat(emp.lat) || centro[0];
@@ -34,21 +31,11 @@ function renderizar(data) {
     const marker = L.marker([lat, lng])
       .addTo(map)
       .bindPopup(`<b>${emp.nome}</b><br>${emp.descricao || 'Não informado'}`);
-    marker.on('click', () => window.location.href = `negocio.html?id=${emp.id}`);
-    markers.push(marker);
 
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.innerHTML = `
-      <img src="${emp.imagem || 'img/default.png'}" alt="${emp.nome}">
-      <div class="card-content">
-        <h3>${emp.nome}</h3>
-        <p>${emp.descricao || 'Não informado'}</p>
-        <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
-      </div>
-    `;
-    card.onclick = () => window.location.href = `negocio.html?id=${emp.id}`;
-    cardsContainer.appendChild(card);
+    // Ao clicar no marcador, vai para a página do negócio
+    marker.on('click', () => window.location.href = `negocio.html?id=${emp.id}`);
+
+    markers.push(marker);
   });
 }
 

@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lista de Empresas</title>
   <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
-  <link rel="stylesheet" href="../css/empresas.css" />
+  <link rel="stylesheet" href="../css/empresas.css">
 </head>
 <body>
-  <body>
   <header>
     <h1>Lista de Empresas Cadastradas</h1>
     <button type="button" onclick="window.location.href='../index.html'">Voltar para o Mapa</button>
@@ -37,9 +36,11 @@
         empresas.forEach(emp => {
           const card = document.createElement("div");
           card.classList.add("card");
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
 
           card.innerHTML = `
-            <img src="${emp.imagem ? 'uploads/' + emp.imagem : 'img/default.png'}" alt="${emp.nome}" />
+            <img src="${emp.imagem ? '../uploads/' + emp.imagem : '../img/default.png'}" alt="${emp.nome}" />
             <div class="card-content">
               <h3>${emp.nome}</h3>
               <p>${emp.descricao || 'Descrição não informada'}</p>
@@ -59,7 +60,5 @@
 
     window.onload = carregarEmpresas;
   </script>
-</body>
-
 </body>
 </html>
