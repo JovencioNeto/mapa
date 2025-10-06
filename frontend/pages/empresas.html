@@ -6,11 +6,12 @@
   <title>Lista de Empresas</title>
   <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
   <link rel="stylesheet" href="../css/empresas.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <header>
     <h1>Lista de Empresas Cadastradas</h1>
-    <button type="button" onclick="window.location.href='../index.html'">Voltar para o Mapa</button>
+    <i class="fas fa-arrow-left"  onclick="window.location.href='../index.html'"></i>
   </header>
 
   <main id="cards">
@@ -39,15 +40,19 @@
           card.setAttribute("role", "button");
           card.setAttribute("tabindex", "0");
 
+          // conteúdo do card com imagem + dados
           card.innerHTML = `
-            <img src="${emp.imagem ? '../uploads/' + emp.imagem : '../img/default.png'}" alt="${emp.nome}" />
-            <div class="card-content">
-              <h3>${emp.nome}</h3>
-              <p>${emp.descricao || 'Descrição não informada'}</p>
-              <p><strong>Categoria:</strong> ${emp.categoria || 'Não informado'}</p>
-              <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
-            </div>
-          `;
+          <img src="http://localhost:3000${emp.imagem || '/uploads/default.png'}" 
+              alt="${emp.nome}" 
+              class="card-img" />
+          <div class="card-content">
+            <h3>${emp.nome}</h3>
+            <p>${emp.descricao || 'Descrição não informada'}</p>
+            <p><strong>Categoria:</strong> ${emp.categoria || 'Não informado'}</p>
+            <p><strong>Atendimento:</strong> ${emp.atendimento || 'Não informado'}</p>
+          </div>
+        `;
+
 
           card.onclick = () => window.location.href = `negocio.html?id=${emp.id}`;
           cardsContainer.appendChild(card);

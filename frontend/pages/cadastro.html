@@ -6,20 +6,22 @@
   <title>Cadastro de Empreendedor</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="../css/cadastro.css" />
-  <script src="../js/cadastro.js"></script>
   <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
   <header>
     <h1>Cadastro de Empreendedor</h1>
-    <button onclick="window.location.href='../index.html'">Voltar</button>
+    <i class="fas fa-arrow-left"  onclick="window.location.href='../index.html'"></i>
   </header>
 
-  <form id="cadastroForm">
-    <label for="nome">Nome do negócio *</label>
+  <form id="cadastroForm" enctype="multipart/form-data">
+
+    <label for="nome">Nome do negócio</label>
     <input type="text" id="nome" name="nome" required />
 
-    <label for="categoria">Categoria *</label>
+    <label for="categoria">Categoria</label>
     <select id="categoria" name="categoria" required>
       <option value="">Selecione...</option>
       <option value="Alimentação">Alimentação</option>
@@ -30,40 +32,46 @@
       <option value="Outro">Outro</option>
     </select>
 
-    <label for="imagem">Arquivo da Foto/Logo *</label>
-    <input type="file" id="imagem" name="imagem" accept="image/*" required />
+    <fieldset>
+      <legend>Tipo de Loja</legend>
+      <label><input type="checkbox" name="tipoLoja" value="fisico" /> Físico</label>
+      <label><input type="checkbox" name="tipoLoja" value="online" /> Online</label>
+      <label><input type="checkbox" name="tipoLoja" value="delivery" /> Delivery</label>
+    </fieldset>
 
-    <label for="descricao">Descrição curta *</label>
-    <textarea
-      id="descricao"
-      name="descricao"
-      rows="3"
-      placeholder="Descreva brevemente o negócio"
-      required
-    ></textarea>
+    <label>Arquivo da Foto/Logo</label>
+    <div class="file-input-container">
+      <label class="file-input-label" for="imagem">
+        <span>📁 Escolher arquivo</span>
+      </label>
+      <span class="file-name" id="fileName">Nenhum arquivo selecionado</span>
+      <input type="file" id="imagem" name="imagem" accept="image/*" required />
+    </div>
 
-    <label>Localização no mapa *</label>
-    <div id="map" style="height:300px; border:1px solid #ccc;"></div>
+    <label for="descricao">Descrição curta</label>
+    <textarea id="descricao" name="descricao" rows="3" placeholder="Descreva brevemente o negócio" required></textarea>
+
+    <label>Localização no mapa</label>
+    <div id="map"></div>
     <input type="hidden" id="lat" name="lat" required />
     <input type="hidden" id="lng" name="lng" required />
-
     <label for="endereco">Endereço (opcional)</label>
     <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro..." />
 
-    <label for="email">Email *</label>
+    <label for="email">Email</label>
     <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" required />
 
-    <label for="telefone">Telefone *</label>
-    <input type="tel" id="telefone" name="telefone" placeholder="(xx) xxxx-xxxx" required />
+    <label for="telefone">Telefone</label>
+    <input type="tel" id="telefone" name="telefone" placeholder="(xx) xxxx-xxxx" pattern="\(\d{2}\) \d{4}-\d{4}" required />
 
     <label for="whatsapp">WhatsApp (opcional)</label>
-    <input type="tel" id="whatsapp" name="whatsapp" placeholder="(xx) 9xxxx-xxxx" />
+    <input type="tel" id="whatsapp" name="whatsapp" placeholder="(xx) 9xxxx-xxxx" pattern="\(\d{2}\) 9\d{4}-\d{4}" />
 
     <label for="instagram">Instagram (opcional)</label>
     <input type="text" id="instagram" name="instagram" placeholder="@usuario" />
 
-    <label>Dias de funcionamento *</label>
-    <div id="diasFuncionamento" style="display:flex; gap:10px; flex-wrap: wrap;">
+    <fieldset>
+      <legend>Dias de funcionamento</legend>
       <label><input type="checkbox" name="dias" value="Segunda" /> Seg</label>
       <label><input type="checkbox" name="dias" value="Terça" /> Ter</label>
       <label><input type="checkbox" name="dias" value="Quarta" /> Qua</label>
@@ -71,159 +79,28 @@
       <label><input type="checkbox" name="dias" value="Sexta" /> Sex</label>
       <label><input type="checkbox" name="dias" value="Sábado" /> Sáb</label>
       <label><input type="checkbox" name="dias" value="Domingo" /> Dom</label>
+    </fieldset>
+
+    <label>Horário de funcionamento</label>
+    <div class="horarios-container">
+      <div class="horario">
+        <label>Manhã:</label>
+        <input type="time" id="horaInicio" name="horaInicio" required>
+        <span>às</span>
+        <input type="time" id="horaFim" name="horaFim" required>
+      </div>
+      <div class="horario">
+        <label>Tarde:</label>
+        <input type="time" name="horaTardeInicio" required />
+        <span>às</span>
+        <input type="time" name="horaTardeFim" required />
+      </div>
     </div>
-
-    <label>Horário de funcionamento *</label>
-    <div style="display:flex; gap:10px;">
-      <input type="time" id="horaInicio" name="horaInicio" required />
-      <input type="time" id="horaFim" name="horaFim" required />
-    </div>
-
-    <label>
-      <input type="checkbox" id="lojaVirtualCheck" name="lojaVirtualCheck" />
-      Tenho uma loja virtual
-    </label>
-
-    <label for="linkLojaVirtual" style="display:none" id="labelLinkLoja">
-      Link da loja virtual
-    </label>
-    <input
-      type="url"
-      id="linkLojaVirtual"
-      name="linkLojaVirtual"
-      placeholder="https://lojaexemplo.com"
-      style="display:none"
-    />
 
     <button type="submit" id="buttonSubmit">Cadastrar</button>
   </form>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    // Inicializar mapa
-    const centro = [-4.0432, -39.4545];
-    const map = L.map("map").setView(centro, 14);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
-
-    let marker;
-    map.on("click", (e) => {
-      const { lat, lng } = e.latlng;
-      if (marker) {
-        marker.setLatLng(e.latlng);
-      } else {
-        marker = L.marker(e.latlng).addTo(map);
-      }
-      document.getElementById("lat").value = lat;
-      document.getElementById("lng").value = lng;
-    });
-
-    // Mostrar/ocultar campo loja virtual
-    const lojaCheck = document.getElementById("lojaVirtualCheck");
-    const linkLojaInput = document.getElementById("linkLojaVirtual");
-    const labelLinkLoja = document.getElementById("labelLinkLoja");
-
-    lojaCheck.addEventListener("change", () => {
-      if (lojaCheck.checked) {
-        linkLojaInput.style.display = "block";
-        labelLinkLoja.style.display = "block";
-        linkLojaInput.required = true;
-      } else {
-        linkLojaInput.style.display = "none";
-        labelLinkLoja.style.display = "none";
-        linkLojaInput.required = false;
-        linkLojaInput.value = "";
-      }
-    });
-
-    // Máscara simples para telefone/whatsapp
-    function aplicarMascaraTelefone(input) {
-      input.addEventListener("input", () => {
-        let v = input.value.replace(/\D/g, "");
-        if (v.length > 10) {
-          v = v.replace(/(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
-        } else if (v.length > 6) {
-          v = v.replace(/(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
-        } else if (v.length > 2) {
-          v = v.replace(/(\d{2})(\d{0,5})/, "($1) $2");
-        } else {
-          v = v.replace(/(\d*)/, "($1");
-        }
-        input.value = v;
-      });
-    }
-    aplicarMascaraTelefone(document.getElementById("telefone"));
-    aplicarMascaraTelefone(document.getElementById("whatsapp"));
-
-    // Validações adicionais
-    function validarEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-    function validarURL(url) {
-      return /^https?:\/\/.+/.test(url);
-    }
-
-    // Enviar formulário
-    document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById("buttonSubmit");
-      btn.disabled = true;
-      btn.textContent = "Enviando...";
-
-      const diasSelecionados = Array.from(document.querySelectorAll('input[name="dias"]:checked')).map(c => c.value);
-
-      const horaInicio = e.target.horaInicio.value;
-      const horaFim = e.target.horaFim.value;
-
-      if (horaFim <= horaInicio) {
-        alert("O horário final deve ser maior que o horário inicial.");
-        btn.disabled = false; btn.textContent = "Cadastrar";
-        return;
-      }
-
-      if (!e.target.lat.value || !e.target.lng.value) {
-        alert("Por favor, clique no mapa para marcar a localização.");
-        btn.disabled = false; btn.textContent = "Cadastrar";
-        return;
-      }
-
-      if (!validarEmail(e.target.email.value.trim())) {
-        alert("Digite um email válido.");
-        btn.disabled = false; btn.textContent = "Cadastrar";
-        return;
-      }
-
-      if (lojaCheck.checked && !validarURL(linkLojaInput.value.trim())) {
-        alert("Digite uma URL válida para a loja virtual.");
-        btn.disabled = false; btn.textContent = "Cadastrar";
-        return;
-      }
-
-      // Preparar dados com FormData (inclui imagem)
-      const formData = new FormData(e.target);
-      formData.append("diasFuncionamento", JSON.stringify(diasSelecionados));
-
-      try {
-        const res = await fetch("http://localhost:3000/api/empreendedores", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (res.ok) {
-          alert("Cadastro realizado com sucesso!");
-          window.location.href = "index.html";
-        } else {
-          const error = await res.json();
-          alert("Erro ao cadastrar: " + (error.error || "Tente novamente."));
-        }
-      } catch (err) {
-        alert("Erro de conexão. Tente novamente mais tarde.");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Cadastrar";
-      }
-    });
-  </script>
+  <script src="../js/cadastro.js"></script>
 </body>
 </html>

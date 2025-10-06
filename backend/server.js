@@ -1,152 +1,148 @@
-import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import multer from "multer";
-import cors from "cors";
-import path from "path";
-import fs from "fs";
+// ====================== IMPORTS ======================
+const express = require("express");
+const multer = require("multer");
+const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const fs = require("fs");
 
+// ====================== CONFIGURAÇÕES ======================
 const app = express();
+const PORT = 3000;
+
+// Pasta de uploads
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+// Serve o front-end junto (HTML, CSS, JS)
+const frontendDir = path.join(__dirname, "../frontend"); // ajuste se sua pasta for diferente
+app.use(express.static(frontendDir));
+
+// ====================== MIDDLEWARES ======================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// ===== Upload de imagens =====
-const uploadDir = path.resolve("uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-
-const upload = multer({
-  dest: uploadDir,
-  fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return cb(new Error("Apenas arquivos de imagem são permitidos!"));
-    }
-    cb(null, true);
-  },
-});
-
-// Servir arquivos de imagem
 app.use("/uploads", express.static(uploadDir));
 
-// ===== Banco de dados =====
-let db;
-async function initDB() {
-  db = await open({
-    filename: "./banco.db",
-    driver: sqlite3.Database,
-  });
+// ====================== BANCO DE DADOS ======================
+const db = new sqlite3.Database(path.join(__dirname, "banco.db"), (err) => {
+  if (err) console.error("❌ Erro ao conectar ao banco:", err.message);
+  else console.log("💾 Banco de dados conectado com sucesso.");
 
-  await db.exec(`
+  // Cria tabela se não existir
+  db.run(`
     CREATE TABLE IF NOT EXISTS empreendedores (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
-      categoria TEXT NOT NULL,
-      imagem TEXT,
       descricao TEXT,
+      categoria TEXT,
+      endereco TEXT,
       lat REAL,
       lng REAL,
-      endereco TEXT,
-      email TEXT,
-      telefone TEXT,
-      whatsapp TEXT,
-      instagram TEXT,
-      diasFuncionamento TEXT,
       horaInicio TEXT,
       horaFim TEXT,
-      lojaVirtualLink TEXT
+      diasFuncionamento TEXT,
+      telefone TEXT,
+      whatsapp TEXT,
+      email TEXT,
+      instagram TEXT,
+      lojaVirtual TEXT,
+      imagem TEXT
     )
-  `);
-}
+  `, (err) => {
+    if (err) console.error("❌ Erro ao criar tabela:", err.message);
+    else console.log("💾 Tabela 'empreendedores' criada ou já existia");
 
-// ===== Rotas =====
+    // Adiciona coluna tipoLoja se não existir
+    db.run(`ALTER TABLE empreendedores ADD COLUMN tipoLoja TEXT`, (err) => {
+      if (err && !err.message.includes("duplicate column name")) {
+        console.error("❌ Erro ao adicionar coluna tipoLoja:", err.message);
+      } else {
+        console.log("✅ Coluna tipoLoja verificada/criada com sucesso.");
+      }
+    });
+  });
+});
 
-// Cadastrar empreendedor
-app.post("/api/empreendedores", upload.single("imagem"), async (req, res) => {
+// ====================== UPLOAD (MULTER) ======================
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, unique + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.mimetype)) return cb(new Error("Formato de imagem inválido."));
+    cb(null, true);
+  },
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+});
+
+// ====================== ROTAS ======================
+// Listar todos os empreendedores
+app.get("/api/empreendedores", (req, res) => {
+  db.all("SELECT * FROM empreendedores", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: "Erro ao buscar dados" });
+    res.json(rows);
+  });
+});
+
+// Buscar empreendedor por ID
+app.get("/api/empreendedores/:id", (req, res) => {
+  const { id } = req.params;
+  db.get("SELECT * FROM empreendedores WHERE id = ?", [id], (err, row) => {
+    if (err) return res.status(500).json({ error: "Erro ao buscar registro" });
+    if (!row) return res.status(404).json({ error: "Negócio não encontrado" });
+    res.json(row);
+  });
+});
+
+// Cadastrar novo empreendedor
+app.post("/api/empreendedores", upload.single("imagem"), (req, res) => {
   try {
     const {
-      nome,
-      categoria,
-      descricao,
-      lat,
-      lng,
-      endereco,
-      email,
-      telefone,
-      whatsapp,
-      instagram,
-      diasFuncionamento,
-      horaInicio,
-      horaFim,
-      linkLojaVirtual
+      nome, descricao, categoria, endereco, lat, lng,
+      horaInicio, horaFim, diasFuncionamento, tipoLoja,
+      telefone, whatsapp, email, instagram, lojaVirtual
     } = req.body;
 
-    // Campos obrigatórios
-    if (!nome || !categoria || !descricao || !lat || !lng || !email || !telefone) {
-      return res.status(400).json({ error: "Campos obrigatórios faltando" });
-    }
+    if (!nome) return res.status(400).json({ error: "O campo 'nome' é obrigatório." });
+    if (!lat || !lng) return res.status(400).json({ error: "As coordenadas são obrigatórias." });
+    if (!horaInicio || !horaFim) return res.status(400).json({ error: "Informe o horário de funcionamento." });
 
-    // Converter lat/lng para números
-    const latitude = parseFloat(lat);
-    const longitude = parseFloat(lng);
-    if (isNaN(latitude) || isNaN(longitude)) {
-      return res.status(400).json({ error: "Latitude ou longitude inválida" });
-    }
+    const diasFuncionamentoFmt = diasFuncionamento ? JSON.parse(diasFuncionamento).join(", ") : "";
+    const tipoLojaFmt = tipoLoja ? JSON.parse(tipoLoja).join(", ") : "";
+    const imagem = req.file ? req.file.filename : null;
 
-    // Caminho da imagem
-    const imagem = req.file ? `/uploads/${req.file.filename}` : null;
+    const sql = `
+      INSERT INTO empreendedores (
+        nome, descricao, categoria, endereco, lat, lng,
+        horaInicio, horaFim, diasFuncionamento, tipoLoja,
+        telefone, whatsapp, email, instagram, lojaVirtual, imagem
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
-    // Inserir no banco
-    await db.run(
-      `INSERT INTO empreendedores 
-       (nome, categoria, imagem, descricao, lat, lng, endereco, email, telefone, whatsapp, instagram, diasFuncionamento, horaInicio, horaFim, lojaVirtualLink)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        nome, categoria, imagem, descricao, latitude, longitude, endereco,
-        email, telefone, whatsapp, instagram, diasFuncionamento,
-        horaInicio, horaFim, linkLojaVirtual || null
-      ]
-    );
+    const params = [
+      nome, descricao, categoria, endereco, lat, lng,
+      horaInicio, horaFim, diasFuncionamentoFmt, tipoLojaFmt,
+      telefone, whatsapp, email, instagram, lojaVirtual, imagem
+    ];
 
-    res.json({ message: "Empreendedor cadastrado com sucesso!" });
+    db.run(sql, params, function(err) {
+      if (err) return res.status(500).json({ error: "Erro ao salvar no banco de dados" });
+      res.status(201).json({ id: this.lastID, message: "Cadastro realizado com sucesso!" });
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao cadastrar empreendedor." });
+    res.status(500).json({ error: "Erro interno no servidor." });
   }
 });
 
-// Listar todos os empreendedores
-app.get("/api/empreendedores", async (req, res) => {
-  try {
-    const empreendedores = await db.all(`SELECT * FROM empreendedores`);
-    res.json(empreendedores);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao listar empreendedores." });
-  }
+// ====================== INICIAR SERVIDOR ======================
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
 });
-
-// Listar todas as tabelas e seus dados
-app.get("/api/todas-tabelas", async (req, res) => {
-  try {
-    const tables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
-    const result = {};
-    for (const t of tables) {
-      result[t.name] = await db.all(`SELECT * FROM ${t.name}`);
-    }
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao listar tabelas" });
-  }
-});
-
-// ===== Inicialização do servidor =====
-async function start() {
-  await initDB();
-  app.listen(3000, () => console.log("Servidor rodando em http://localhost:3000"));
-
-  const rows = await db.all("SELECT * FROM empreendedores")
-  console.log(rows)
-}
-
-start();

@@ -4,16 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mapa de Empreendedores - General Sampaio</title>
+  
   <link rel="stylesheet" href="./css/style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <link rel="icon" href="../public/img/LogoGeneral.png" type="image/x-icon">
 </head>
 <body>
   <header>
-    <h1>Mapa de Empreendedores - General Sampaio</h1>
-    <div class="controls">
-      <input type="text" id="search" placeholder="Buscar por nome, produto ou descrição" class="item"/>
-      
+    <div class="header-top">
+      <img src="../public/img/LogoPrefeitura.png" alt="Logo General Sampaio" />
+      <h1>Mapa de Empreendedores - General Sampaio</h1>
+      <a href="./pages/login.html" class="login-btn">
+        <i class="fas fa-user"></i>
+      </a>
+  </div>
+
+
+    <nav class="controls">
+      <input type="search" id="search" placeholder="Buscar por nome, produto ou descrição" class="item" />
       <select id="categoriaFilter" class="item">
         <option value="">Todas Categorias</option>
         <option value="Alimentação">Alimentação</option>
@@ -23,23 +33,21 @@
         <option value="Saúde">Saúde</option>
         <option value="Outro">Outro</option>
       </select>
-
       <select id="atendimentoFilter" class="item">
         <option value="">Tipo de Atendimento</option>
         <option value="fisico">Físico</option>
         <option value="online">Online</option>
         <option value="delivery">Delivery</option>
       </select>
-
       <button id="filterBtn" class="item">Filtrar</button>
-      <button id="addBtn" class="item" onclick="location.href='./pages/cadastro.html'">Cadastrar Negócios</button>
+      <button id="addBtn" class="item" onclick="location.href='./pages/cadastro.html'">Cadastrar Negócio</button>
       <button id="all" class="item" onclick="location.href='./pages/empresas.html'">Empresas</button>
-    </div>
+    </nav>
   </header>
+
 
   <main>
     <section id="map"></section>
-    <!-- removido: <section id="cards"></section> -->
   </main>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
