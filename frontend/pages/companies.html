@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lista de Empresas Cadastradas</title>
+  <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
+  <link rel="stylesheet" href="../css/companies.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="../js/companies.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Lista de Empresas Cadastradas</h1>
+    <button class="btn-retry" onclick="window.location.href='../index.html'" aria-label="Voltar para a página inicial">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+  </header>
+
+  <main id="cards" role="main" aria-live="polite"> <!-- Adicionei role e aria-live para acessibilidade dinâmica -->
+    <p>Carregando empresas...</p>
+  </main>
+</body>
+</html>

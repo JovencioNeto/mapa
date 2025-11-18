@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Empreendedor</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="../css/register.css" />
+  <link rel="icon" href="../../public/img/LogoGeneral.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="../js/register.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Cadastro de Empreendedor</h1>
+    <button class="btn-retry" onclick="window.location.href='../index.html'" aria-label="Voltar para a página inicial">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+  </header>
+
+  <main>
+    <form id="cadastroForm" enctype="multipart/form-data" novalidate>
+
+      <!-- NOME DO NEGÓCIO -->
+      <label for="nome">Nome do negócio</label>
+      <input type="text" id="nome" name="nome" placeholder="Ex: Doces da Ana" required />
+      <span class="error-message" id="nome-error" role="alert"></span>
+
+      <!-- CATEGORIA -->
+      <label for="categoria">Categoria</label>
+      <select id="categoria" name="categoria" required>
+        <option value="">Selecione...</option>
+        <option value="Alimentação">Alimentação</option>
+        <option value="Moda">Moda</option>
+        <option value="Serviços">Serviços</option>
+        <option value="Tecnologia">Tecnologia</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Outro">Outro</option>
+      </select>
+      <span class="error-message" id="categoria-error" role="alert"></span>
+
+      <!-- TIPO DE LOJA -->
+      <fieldset>
+        <legend>Tipo de Loja (selecione pelo menos um)</legend>
+        <label><input type="checkbox" name="tipoLoja[]" value="fisico"> Físico</label>
+        <label><input type="checkbox" name="tipoLoja[]" value="online"> Online</label>
+        <label><input type="checkbox" name="tipoLoja[]" value="delivery"> Delivery</label>
+      </fieldset>
+      <span class="error-message" id="tipoLoja-error" role="alert"></span>
+
+      <!-- UPLOAD DE IMAGEM -->
+      <label>Arquivo da Foto/Logo</label>
+      <div class="file-input-container">
+        <label class="file-input-label" for="imagem">
+          <span>📁 Escolher arquivo</span>
+        </label>
+        <span class="file-name" id="fileName">Nenhum arquivo selecionado</span>
+        <input type="file" id="imagem" name="imagem" accept="image/*" />
+      </div>
+      <span class="error-message" id="imagem-error" role="alert"></span>
+
+      <!-- DESCRIÇÃO CURTA -->
+      <label for="descricao">Descrição curta</label>
+      <textarea id="descricao" name="descricao" rows="3" placeholder="Descreva brevemente o negócio" required></textarea>
+      <span class="error-message" id="descricao-error" role="alert"></span>
+
+      <!-- MAPA -->
+      <label>Localização no mapa (clique no mapa para definir)</label>
+      <div id="map" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 4px;"></div>
+      <input type="hidden" id="lat" name="lat" required />
+      <input type="hidden" id="lng" name="lng" required />
+      <span class="error-message" id="map-error" role="alert"></span>
+
+      <!-- ENDEREÇO OPCIONAL -->
+      <label for="endereco">Endereço </label>
+      <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro... General Sampaio, CE" />
+      <span class="error-message" id="endereco-error" role="alert"></span>
+
+      <!-- EMAIL -->
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" required />
+      <span class="error-message" id="email-error" role="alert"></span>
+
+      <!-- TELEFONE -->
+      <label for="telefone">Telefone</label>
+      <input type="tel" id="telefone" name="telefone" placeholder="(88) 99999-9999" pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$" required />
+      <span class="error-message" id="telefone-error" role="alert"></span>
+
+      <!-- INSTAGRAM OPCIONAL -->
+      <label for="instagram">Instagram (opcional)</label>
+      <input type="text" id="instagram" name="instagram" placeholder="@usuario" />
+      <span class="error-message" id="instagram-error" role="alert"></span>
+
+      <!-- DIAS DE FUNCIONAMENTO -->
+      <fieldset>
+        <legend>Dias de funcionamento</legend>
+        <label><input type="checkbox" name="dias[]" value="Segunda"> Seg</label>
+        <label><input type="checkbox" name="dias[]" value="Terça"> Ter</label>
+        <label><input type="checkbox" name="dias[]" value="Quarta"> Qua</label>
+        <label><input type="checkbox" name="dias[]" value="Quinta"> Qui</label>
+        <label><input type="checkbox" name="dias[]" value="Sexta"> Sex</label>
+        <label><input type="checkbox" name="dias[]" value="Sábado"> Sáb</label>
+        <label><input type="checkbox" name="dias[]" value="Domingo"> Dom</label>
+      </fieldset>
+      <span class="error-message" id="dias-error" role="alert"></span>
+
+      <!-- HORÁRIOS DE FUNCIONAMENTO -->
+      <label>Horário de funcionamento</label>
+      <div class="horarios-container">
+        <div class="horario">
+          <label>Manhã:</label>
+          <input type="time" id="horaInicio" name="horaInicio" required>
+          <span>às</span>
+          <input type="time" id="horaFim" name="horaFim" required>
+          <span class="error-message" id="horaManha-error" role="alert"></span>
+        </div>
+        <div class="horario">
+          <label>Tarde:</label>
+          <input type="time" id="horaTardeInicio" name="horaTardeInicio">
+          <span>às</span>
+          <input type="time" id="horaTardeFim" name="horaTardeFim">
+          <span class="error-message" id="horaTarde-error" role="alert"></span>
+        </div>
+      </div>
+
+      <!-- BOTÃO SUBMIT -->
+      <button type="submit" id="buttonSubmit">Cadastrar</button>
+    </form>
+  </main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Script inline para file input -->
+  <script>
+    document.getElementById('imagem').addEventListener('change', function (e) {
+      const fileName = document.getElementById('fileName');
+      fileName.textContent = e.target.files[0] ? e.target.files[0].name : 'Nenhum arquivo selecionado';
+    });
+  </script>
+</body>
+</html>

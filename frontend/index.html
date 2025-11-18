@@ -4,26 +4,48 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mapa de Empreendedores - General Sampaio</title>
-  
+
+  <!-- CSS -->
   <link rel="stylesheet" href="./css/style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- Favicon -->
   <link rel="icon" href="../public/img/LogoGeneral.png" type="image/x-icon">
+
+  <!-- JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+  <script src="./js/script.js" defer></script>
 </head>
 <body>
-  <header>
+  <!-- HEADER -->
+    <header>
+    <!-- TOPO DO HEADER -->
     <div class="header-top">
-      <img src="../public/img/LogoPrefeitura.png" alt="Logo General Sampaio" />
-      <h1>Mapa de Empreendedores - General Sampaio</h1>
+
+      <!-- Botão hamburguer (esquerda) -->
+      <button class="menu-toggle" aria-label="Abrir menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <!-- LOGO (desktop) -->
+      <img src="../public/img/LogoPrefeitura.png" alt="Logo General Sampaio" class="logo desktop-only" />
+
+      <!-- TÍTULO (central no mobile / lateral no desktop) -->
+      <h1 class="header-title">Mapa de Empreendedores</h1>
+
+      <!-- Ícone de usuário (direita) -->
       <a href="./pages/login.html" class="login-btn">
         <i class="fas fa-user"></i>
       </a>
-  </div>
 
+    </div>
 
-    <nav class="controls">
-      <input type="search" id="search" placeholder="Buscar por nome, produto ou descrição" class="item" />
+    <!-- MENU DESKTOP -->
+    <nav class="controls desktop-only">
+      <input type="search" id="search" placeholder="Buscar por nome" class="item" />
       <select id="categoriaFilter" class="item">
         <option value="">Todas Categorias</option>
         <option value="Alimentação">Alimentação</option>
@@ -39,18 +61,94 @@
         <option value="online">Online</option>
         <option value="delivery">Delivery</option>
       </select>
-      <button id="filterBtn" class="item">Filtrar</button>
-      <button id="addBtn" class="item" onclick="location.href='./pages/cadastro.html'">Cadastrar Negócio</button>
-      <button id="all" class="item" onclick="location.href='./pages/empresas.html'">Empresas</button>
+      <button id="addBtn" class="item" onclick="location.href='./pages/register.html'">Cadastrar Negócio</button>
+      <button id="all" class="item" onclick="location.href='./pages/companies.html'">Empresas</button>
+    </nav>
+
+    <!-- MENU LATERAL MOBILE -->
+    <nav class="nav-mobile" id="navMobile">
+
+      <!-- Cabeçalho do menu -->
+      <div class="nav-mobile-header">
+        <img src="../public/img/LogoPrefeitura.png" alt="Logo General Sampaio" class="logo-mobile">
+
+        <button class="close-menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="nav-mobile-content">
+        <input type="search" id="search-mobile" placeholder="Buscar por nome" />
+
+        <select id="categoriaFilter-mobile">
+          <option value="">Todas Categorias</option>
+          <option value="Alimentação">Alimentação</option>
+          <option value="Moda">Moda</option>
+          <option value="Serviços">Serviços</option>
+          <option value="Tecnologia">Tecnologia</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Outro">Outro</option>
+        </select>
+
+        <select id="atendimentoFilter-mobile">
+          <option value="">Tipo de Atendimento</option>
+          <option value="fisico">Físico</option>
+          <option value="online">Online</option>
+          <option value="delivery">Delivery</option>
+        </select>
+
+        <button id="addBtn-mobile" onclick="location.href='./pages/register.html'">Cadastrar Negócio</button>
+        <button id="all-mobile" onclick="location.href='./pages/companies.html'">Empresas</button>
+      </div>
+
     </nav>
   </header>
 
-
+  <!-- MAPA -->
   <main>
     <section id="map"></section>
   </main>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="./js/script.js"></script>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logos">
+        <img src="../public/img/LogoPrefeitura2.png" alt="Logo Prefeitura">
+        <img src="../public/img/SeloUnicef.png" alt="Logo UNICEF">
+        <img src="../public/img/SeloAlfabetização.png" alt="Logo Educação">
+        <img src="../public/img/Transparencia.png" alt="Logo Cultura">
+      </div>
+    </div>
+
+    <div class="footer-middle">
+      <div class="footer-section">
+        <h3>Institucional</h3>
+        <p><i class="fas fa-user"></i> Prefeito Municipal João Paulo Sales Cordeiro</p>
+        <p><i class="fas fa-id-card"></i> CNPJ: 07.438.591/0001-22</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contatos</h3>
+        <p><i class="fas fa-phone"></i> (85) 3357-1088</p>
+        <p><i class="fas fa-envelope"></i> segov@generalsampaio.ce.gov.br</p>
+      </div>
+      <div class="footer-section">
+        <h3>Endereço e horário</h3>
+        <p><i class="fas fa-map-marker-alt"></i> Av. José Severino Filho, 257 - Sagrado Coração de Jesus</p>
+        <p><i class="fas fa-clock"></i> Segunda a Sexta das 08:00 às 17:00</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="socials">
+        <a href="https://webmail-seguro.com.br/generalsampaio.ce.gov.br" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://www.facebook.com/prefeituradegalsampaio" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/prefdegeneralsampaio" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-credits">
+      <p>© 2025 <span class="brand">Prefeitura Municipal de General Sampaio</span>. Todos os Direitos Reservados.</p>
+    </div>
+  </footer>
 </body>
 </html>

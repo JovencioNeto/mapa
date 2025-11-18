@@ -1,0 +1,276 @@
+/* ==========================================================
+   1. VARIÁVEIS GLOBAIS
+   ========================================================== */
+:root {
+  --cor-primaria: #2d89ef;
+  --cor-secundaria: #1e90ff;
+  --cor-fundo-grad: linear-gradient(135deg, #f0f8ff, #e6f2ff);
+  --cor-fundo-card: #ffffff;
+  --cor-texto-principal: #333333;
+  --cor-texto-secundario: #555555;
+  --cor-borda: #dddddd;
+  --cor-sombra: rgba(0, 0, 0, 0.08);
+  --cor-erro: #dc3545;
+
+  --padding-base: 20px;
+  --padding-mobile: 15px;
+  --gap-cards: 25px;
+  --border-radius: 20px;
+  --border-radius-btn: 8px;
+  --altura-img-card: 180px;
+  --sombra-card: 0 8px 20px var(--cor-sombra);
+  --sombra-hover: 0 12px 28px rgba(0, 0, 0, 0.15);
+  --transicao-base: all 0.3s ease;
+  --min-height-touch: 44px;
+}
+
+/* ==========================================================
+   2. RESET GLOBAL
+   ========================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* ==========================================================
+   3. BODY E LAYOUT GERAL
+   ========================================================== */
+body {
+  background: var(--cor-fundo-grad);
+  min-height: 100vh;
+  color: var(--cor-texto-principal);
+  line-height: 1.5;
+  padding: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  body {
+    padding: var(--padding-base);
+  }
+}
+
+/* ==========================================================
+   4. HEADER — Botão à direita
+   ========================================================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3a8a, var(--cor-primaria));
+  color: #fff;
+  padding: var(--padding-mobile) 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--sombra-card);
+  margin-bottom: var(--gap-cards);
+}
+
+/* título à esquerda */
+header h1 {
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: bold;
+  order: 1;
+}
+
+/* botão à direita */
+header .btn-retry {
+  order: 2;
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transicao-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--min-height-touch);
+  min-height: var(--min-height-touch);
+  font-size: 18px;
+}
+
+header .btn-retry:hover,
+header .btn-retry:focus {
+  background: #fff;
+  color: var(--cor-primaria);
+  transform: scale(1.05);
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  header h1 {
+    text-align: center;
+  }
+
+  header .btn-retry {
+    align-self: flex-end;
+    border-radius: var(--border-radius-btn);
+  }
+}
+
+/* ==========================================================
+   5. GRID DE CARDS
+   ========================================================== */
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--gap-cards);
+  justify-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+/* ==========================================================
+   6. CARD DE EMPRESA
+   ========================================================== */
+.card {
+  background: var(--cor-fundo-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+  transition: var(--transicao-base);
+  max-width: 320px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: var(--sombra-hover);
+}
+
+.card img {
+  width: 100%;
+  height: var(--altura-img-card);
+  object-fit: cover;
+  border-bottom: 1px solid var(--cor-borda);
+  transition: var(--transicao-base);
+}
+
+.card:hover img {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-content h3 {
+  color: var(--cor-primaria);
+  font-weight: bold;
+  font-size: 1.25em;
+}
+
+.card-content p {
+  color: var(--cor-texto-secundario);
+  font-size: 1em;
+}
+
+.card-content strong {
+  color: var(--cor-texto-principal);
+}
+
+/* ==========================================================
+   7. ESTADOS DE LISTA (vazio, erro, loading)
+   ========================================================== */
+.loading, .error, .empty {
+  text-align: center;
+  background: var(--cor-fundo-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--sombra-card);
+  margin: 20px auto;
+  padding: 25px;
+  max-width: 400px;
+  color: #777;
+}
+
+.loading i {
+  font-size: 2rem;
+  color: var(--cor-secundaria);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: var(--cor-erro);
+  border-left: 4px solid var(--cor-erro);
+  padding-left: 20px;
+}
+
+.empty a {
+  color: var(--cor-secundaria);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.empty a:hover {
+  color: var(--cor-primaria);
+  text-decoration: underline;
+}
+
+/* ==========================================================
+   8. BOTÕES
+   ========================================================== */
+.btn-retry-again
+
+{
+  background: var(--cor-primaria);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-btn);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transicao-base);
+  min-height: var(--min-height-touch);
+  width: 100%;
+  margin-top: 15px;
+}
+
+.btn-retry:hover {
+  background: var(--cor-secundaria);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ==========================================================
+   9. INPUTS E FORMS
+   ========================================================== */
+input, select, textarea {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #fff;
+  transition: var(--transicao-base);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 6px rgba(30, 58, 138, 0.3);
+  outline: none;
+}

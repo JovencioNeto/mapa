@@ -1,5 +1,7 @@
 /* ===============================
    RESET E BASE
+   - Reset padrão para remover margens/paddings indesejados.
+   - Configurações globais para layout flexível e tipografia.
 =================================*/
 * {
   margin: 0;
@@ -9,180 +11,740 @@
 
 html, body {
   height: 100%;
+  min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f0f2f5;
-  display: flex;
-  flex-direction: column;
   color: #333;
+  margin: 0;
+  padding: 0;
 }
 
 /* ===============================
    HEADER
+   - Container principal do header com gradiente e sombra para profundidade.
+   - Usa flexbox para empilhar .header-top e .controls verticalmente.
 =================================*/
-/* HEADER */
 header {
-  background: linear-gradient(90deg, #1e3a8a, #1e90ff);
+  background: linear-gradient(135deg, #1e3a8a, #2d89ef);
   color: #fff;
-  padding: 15px 20px 25px 20px;
+  padding: 15px 20px 0 20px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* LOGO + TÍTULO */
+/* ===============================
+   HEADER-TOP: LOGO, TÍTULO E BOTÃO DE LOGIN
+   - Flexbox para alinhar logo (esquerda), título (centro) e login (direita).
+   - Título posicionado absolutamente para centralização precisa em telas maiores.
+=================================*/
 .header-top {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* logo fica esquerda, título central */
+  justify-content: space-between;
   position: relative;
+  min-height: 70px;
+  flex: none;
+  flex-wrap: wrap;
 }
 
 .header-top img {
   height: 70px;
   width: auto;
+  transition: transform 0.2s ease;
+}
+
+.header-top img:hover {
+  transform: scale(1.05);
 }
 
 .header-top h1 {
-  position: absolute; /* força centralização */
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
   font-size: 24px;
   font-weight: bold;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  margin: 0;
+  flex: none;
 }
 
-/* CONTROLES */
+.login-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  background: transparent;
+  z-index: 10;
+}
+
+.login-btn:hover,
+.login-btn:focus {
+  color: #2d89ef;
+  transform: translateY(-50%) scale(1.1);
+  border-color: #2d89ef;
+  background: rgb(255, 255, 255);
+}
+
+/* ===============================
+   CONTROLES: BUSCA, FILTROS E BOTÕES
+   - Flexbox com wrap para quebrar linha em telas menores.
+   - Estilos compartilhados para inputs, selects e buttons.
+=================================*/
 .controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 10px;
-  margin-top: 15px;
+  margin: 0;
+  flex: none;
+  padding-bottom: 15px;
 }
-
 
 .controls input[type="search"],
 .controls select {
   appearance: none;
   background: #fff;
   border: none;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 180px;
+  font-size: 14px;
+  color: #333;
 }
 
 .controls select {
   background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,8' fill='%23333'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 12px center;
   background-size: 12px;
-  padding-right: 32px;
+  padding-right: 40px;
 }
 
 .controls input[type="search"]:focus,
 .controls select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(30,144,255,0.3);
+  box-shadow: 0 0 0 3px rgba(30,144,255,0.3), 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
 }
 
 .controls button {
   background: #fff;
-  color: #333;
+  color: black;
   border: none;
-  padding: 10px 16px;
+  padding: 12px 18px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
-.controls button:hover {
-  background: #f0f0f0;
-  transform: scale(1.05);
-}
-
-.login-btn {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 50px;      
-  height: 50px;        
-  border: 3px solid #fff; 
-  border-radius: 50%;     
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.controls button:hover,
+.controls button:focus {
+  background: #3675db;
+  box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4);
+  transform: translateY(-2px);
   color: #fff;
-  text-decoration: none;
-  font-size: 24px;     
-  transition: color 0.3s, transform 0.2s;
-  background: transparent;
 }
 
-.login-btn:hover {
-  color: #1e3a8a; 
-  transform: scale(1.1);
-  border: 3px solid #1e3a8a; 
+.controls button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 188, 212, 0.2);
+}
+
+/* ===============================
+   MENU LATERAL RESPONSIVO
+=================================*/
+
+/* =========================
+   Botão hamburguer
+========================= */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 22px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  z-index: 1001;
+  transition: transform 0.3s ease;
+}
+
+.menu-toggle.open {
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-toggle .bar {
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle.open .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.open .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mostra o botão apenas em telas pequenas */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  /* Esconde o menu desktop */
+  .controls {
+    display: none;
+  }
+}
+
+
+/* Menu lateral oculto por padrão (desktop) */
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: -100%; /* Fora da tela */
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(135deg, #007bff, #00bcd4);
+  color: #fff;
+  z-index: 1000;
+  transition: left 0.3s ease-in-out; /* Transição suave */
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Só mostra em mobile */
+@media (max-width: 768px) {
+  .nav-mobile {
+    display: block;
+  }
+  
+  .nav-mobile.open {
+    left: 0; /* Visível quando aberto */
+  }
+}
+
+/* Fundo semitransparente quando aberto */
+body.menu-open::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 999; /* Abaixo do menu */
+  backdrop-filter: blur(3px);
+}
+
+/* Header do menu mobile */
+.nav-mobile-header {
+  position: relative;
+  padding: 15px;
+}
+
+/* Ícone de fechar no menu mobile */
+.close-menu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.close-menu i {
+  color: #fff;   /* deixa o X branco */
+  font-size: 28px;
+  transition: 0.2s ease;
+}
+
+/* Efeito hover opcional */
+.close-menu:hover i {
+  transform: scale(1.15);
+  opacity: 0.8;
+}
+
+
+.nav-mobile-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.nav-mobile-header img {
+  width: 100%;
+  max-width: 250px;     /* fica proporcional em qualquer celular */
+  display: block;       /* remove espaços indesejados */
+  margin: 0 auto;       /* centraliza */
+  border-radius: 10px;  /* arredondar se quiser */
+  
+  object-fit: cover;    /* preenche bonito */
+}
+
+/* Conteúdo do menu mobile */
+.nav-mobile-content {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-mobile input[type="search"],
+.nav-mobile select,
+.nav-mobile-content button {
+  background: #fff;
+  color: black;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.nav-mobile select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www/w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,8' fill='%23333'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+  appearance: none;
+}
+
+.nav-mobile-content button {
+  background: #fff;
+  color: black;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.nav-mobile-content button:hover {
+  background: #3675db;
+  box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.nav-mobile input:focus,
+.nav-mobile select:focus,
+.nav-mobile-content button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 /* ===============================
+   ÍCONES NOS POPUPS
+=================================*/
+.leaflet-popup-content i.fas,
+.leaflet-popup-content i.fab {
+  font-size: 16px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.leaflet-popup-content i.fa-tag { color: #2E86AB; }
+.leaflet-popup-content i.fa-envelope { color: #1DA1F2; }
+.leaflet-popup-content i.fa-phone { color: #28A745; }
+.leaflet-popup-content i.fa-calendar-alt { color: #FFC107; }
+.leaflet-popup-content i.fa-clock { color: #FF6F61; }
+.leaflet-popup-content i.fa-store { color: #6F42C1; }
+
+.leaflet-popup-content i.fa-instagram {
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.leaflet-popup-content i {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
+}
+
+.leaflet-popup-content i.fa-tag:hover {
+  transform: rotate(-10deg) scale(1.4) rotateY(20deg);
+  filter: drop-shadow(0 0 8px #ffcc00);
+}
+
+.leaflet-popup-content i.fa-envelope:hover {
+  transform: translateY(-4px) scale(1.3) rotateY(15deg);
+  filter: drop-shadow(0 0 8px #00ccff);
+}
+
+.leaflet-popup-content i.fa-phone:hover {
+  transform: rotate(15deg) scale(1.35) rotateY(-20deg);
+  filter: drop-shadow(0 0 8px #00ff99);
+}
+
+.leaflet-popup-content i.fa-calendar-alt:hover {
+  transform: scale(1.35) rotateY(10deg);
+  filter: drop-shadow(0 0 8px #ff6699);
+}
+
+.leaflet-popup-content i.fa-clock:hover {
+  transform: rotate(-20deg) scale(1.3) rotateY(15deg);
+  filter: drop-shadow(0 0 8px #ff9966);
+}
+
+.leaflet-popup-content i.fa-store:hover {
+  transform: scale(1.35) rotateY(-10deg);
+  filter: drop-shadow(0 0 8px #66ccff);
+}
+
+.leaflet-popup-content i.fa-instagram:hover {
+  transform: scale(1.4) rotateY(15deg);
+  filter: drop-shadow(0 0 10px #dd2a7b);
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 8px currentColor); }
+  50% { filter: drop-shadow(0 0 20px currentColor); }
+}
+
+.leaflet-popup-content i:hover {
+  animation: glow 1s infinite alternate;
+}
+
+.leaflet-popup-content img {
+  max-width: 200px;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* ===============================
    MAIN E MAPA
+   - Main ocupa o espaço restante da tela graças ao flex:1 no body.
+   - Mapa preenche o main completamente para melhor uso de espaço.
 =================================*/
 main {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  min-height: 0;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+main.shifted #map {
+  filter: brightness(0.9);
+  transition: filter 0.3s ease;
 }
 
 #map {
   width: 100%;
-  height: 600px;
-  border: 2px solid #e0e0e0;
+  height: calc(100vh - 140px);
+  min-height: 400px;
   overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 /* ===============================
-   RESPONSIVIDADE
+   FOOTER
 =================================*/
-@media (max-width: 1024px) {
-  header h1 {
-    font-size: 22px;
-  }
-  .controls input[type="search"],
-  .controls select,
-  .controls button {
-    padding: 8px 12px;
-    font-size: 0.95em;
-  }
+.footer {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
 }
+
+.footer {
+  background: linear-gradient(to bottom, #123e72 0%, #103866 60%, #0e325b 100%);
+}
+
+.footer-top {
+  padding: 30px 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.footer-logos {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-logos img {
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.footer-logos img:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(77, 184, 255, 0.8));
+}
+
+.footer-middle {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 40px 20px;
+  gap: 30px;
+}
+
+.footer-section {
+  flex: 1 1 250px;
+  text-align: left;
+  max-width: 320px;
+}
+
+.footer-section h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  border-left: 3px solid #4db8ff;
+  padding-left: 8px;
+}
+
+.footer-section p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.footer-section i {
+  color: #4db8ff;
+  margin-right: 8px;
+}
+
+.footer-bottom {
+  background: #0a2a4c;
+  padding: 20px 10px;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom .socials {
+  margin-bottom: 8px;
+}
+
+.footer-bottom .socials a {
+  color: #fff;
+  font-size: 1.4rem;
+  margin: 0 10px;
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer-bottom .socials a:hover {
+  color: #4db8ff;
+  transform: scale(1.2);
+  text-shadow: 0 0 10px rgba(77, 184, 255, 0.6);
+}
+
+.footer-bottom .brand {
+  color: #4db8ff;
+  font-weight: 600;
+}
+
+.footer-credits {
+  background: #0a1f3f;
+  text-align: center;
+  color: #d4e6ff;
+  padding: 15px 10px;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-credits span {
+  color: #4db8ff;
+  font-weight: 600;
+}
+
+/* ===============================
+   HEADER MOBILE ORGANIZADO
+=================================*/
 
 @media (max-width: 768px) {
+
+  /* HEADER MOBILE */
   header {
+    display: flex;
+    justify-content: space-between;
+    align-items: row;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #1e3a8a, #2d89ef);
+    height: auto;
+  }
+
+  .header-top img{
+    display: none;
+  }
+
+  /* Botão hamburguer (ESQUERDA) */
+  .menu-toggle {
+    display: flex !important;
     flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 2000;
+  }
+
+  .menu-toggle .bar {
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 2px;
+  }
+
+  /* TÍTULO CENTRALIZADO */
+  .header-title {
+    flex: 1;
     text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-left: 10px; /* evita colar no menu */
   }
-  header h1 {
-    order: 2;
-    font-size: 20px;
+
+  /* ÍCONE DO USUÁRIO (DIREITA) */
+  .header-user-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
   }
-  header .logo {
-    order: 1;
-  }
+
+  /* Esconde menu desktop */
   .controls {
-    order: 3;
+    display: none !important;
   }
-  #map {
-    height: 450px;
+
+  /* MENU LATERAL MOBILE */
+  .nav-mobile {
+    position: fixed;
+    top: 0;
+    left: -270px;
+    width: 260px;
+    height: 100vh;
+    background: #1c62d5;
+    padding: 30px 20px;
+    transition: left 0.3s ease;
+    z-index: 1500;
+  }
+
+  .nav-mobile.open {
+    left: 0;
+  }
+
+  /* Links / filtros / buscas */
+  .nav-mobile a,
+  .nav-mobile .search-box {
+    margin-top: 10px;
+    display: block;
+  }
+
+  
+  .menu-btn {
+    display: block;
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  nav.menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background: white;
+    padding: 15px;
+    position: absolute;
+    top: 60px;
+    right: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  nav.menu.active {
+    display: flex;
   }
 }
 
-@media (max-width: 480px) {
-  .controls {
-    flex-direction: column;
-    gap: 8px;
+
+/* ——— DESKTOP ——— */
+@media (min-width: 769px) {
+  .menu-btn {
+    display: none;
   }
-  #map {
-    height: 350px;
+
+  nav.menu {
+    display: flex;  /* VOLTA A SER COMO ERA */
+    gap: 20px;
+    position: static;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+  }
+
+}
+
+/* ===== TÍTULO MOBILE AJUSTADO ===== */
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 18px !important;
+    line-height: 20px !important;
+    text-align: center;
+    margin-right: 20px ;
+    max-width: 160px; /* impede quebra feia */
   }
 }

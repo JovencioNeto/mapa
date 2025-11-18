@@ -1,0 +1,600 @@
+/* ===== 1. VARIÁVEIS CSS (ROOT) - Para fácil manutenção de cores, tamanhos e espaçamentos ===== */
+:root {
+  /* Cores temáticas (azul institucional para prefeitura) */
+  --cor-primaria: #2d89ef; /* Azul principal */
+  --cor-primaria-hover: #1a5bb8; /* Azul escuro para hover */
+  --cor-fundo: #f0f8ff; /* Fundo claro gradiente */
+  --cor-fundo-form: #ffffff; /* Branco para formulário */
+  --cor-texto: #333333; /* Texto principal */
+  --cor-borda: #cccccc; /* Bordas neutras */
+  --cor-sucesso: #28a745; /* Verde para confirmações (opcional) */
+  --cor-erro: #dc3545; /* Vermelho para erros */
+  --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra geral */
+  --sombra-foco: 0 0 8px rgba(45, 137, 239, 0.4); /* Sombra para focus */
+
+  /* Tamanhos e espaçamentos (escaláveis para responsividade) */
+  --padding-base: 12px; /* Padding padrão para inputs/botões */
+  --padding-mobile: 10px; /* Reduzido em mobile */
+  --gap-base: 15px; /* Gap entre elementos */
+  --gap-mobile: 10px; /* Gap em mobile */
+  --border-radius: 8px; /* Bordas arredondadas */
+  --font-size-base: 1rem; /* Tamanho de fonte base */
+  --font-size-small: 0.95rem; /* Para labels secundários */
+  --min-height-btn: 44px; /* Altura mínima para botões (touch-friendly em mobile) */
+  --transicao-base: all 0.3s ease;
+  --min-height-touch: 44px;
+}
+
+/* ===== 2. RESET E FONTES - Limpa padrões do navegador e define fontes ===== */
+* {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ===== 3. BODY E LAYOUT GERAL - Fundo e estrutura base (mobile-first) ===== */
+body {
+  background: linear-gradient(135deg, var(--cor-fundo), #e6f2ff); /* Gradiente sutil para profundidade */
+  min-height: 100vh;
+  color: var(--cor-texto);
+  line-height: 1.5; /* Melhora legibilidade */
+  padding: var(--gap-mobile); /* Padding mínimo em mobile */
+}
+
+@media (min-width: 768px) {
+  body {
+    padding: 20px; /* Aumenta em desktop */
+  }
+}
+
+/* ===== 4. HEADER - Cabeçalho com botão de retry (responsivo) ===== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-mobile) 15px; /* Compacto em mobile */
+  background: linear-gradient(135deg, #1e3a8a, var(--cor-primaria)); /* Gradiente azul institucional */
+  color: white;
+  box-shadow: var(--sombra-suave);
+  margin-bottom: var(--gap-base);
+  border-radius: var(--border-radius); /* Arredondado para modernidade */
+}
+
+header h1 {
+  font-size: clamp(1.4rem, 4vw, 1.6rem); /* Responsivo: escala com viewport */
+  font-weight: bold;
+}
+
+/* ===== 4. HEADER - Cabeçalho com botão de retry (responsivo) ===== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-mobile) 15px;
+  background: linear-gradient(135deg, #1e3a8a, var(--cor-primaria));
+  color: white;
+  box-shadow: var(--sombra-suave);
+  margin-bottom: var(--gap-base);
+  border-radius: var(--border-radius);
+}
+
+header h1 {
+  font-size: clamp(1.4rem, 4vw, 1.6rem);
+  font-weight: bold;
+}
+
+header .btn-retry {
+  background: rgba(255, 255, 255, 0.2); /* inicial semi-transparente */
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--min-height-touch);
+  min-height: var(--min-height-touch);
+  font-size: 18px;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Muda 'background-color' para 'background' na transição */
+  position: relative;
+  z-index: 1;
+}
+
+header .btn-retry:hover,
+header .btn-retry:focus {
+  background-color: #fff !important; /* Fundo branco forçado */
+  color: var(--cor-primaria) !important;
+  transform: scale(1.05);
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+header .btn-retry i {
+  color: inherit; /* ícone herda a cor do botão */
+  transition: inherit; /* animação igual ao botão */
+}
+
+
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  header h1 {
+    text-align: center;
+  }
+
+  header .btn-retry {
+    align-self: flex-end;
+    border-radius: var(--border-radius);
+  }
+}
+
+@media (min-width: 768px) {
+  header {
+    padding: 15px 25px; /* Mais espaço em desktop */
+  }
+}
+
+/* ===== 5. FORMULÁRIO PRINCIPAL - Container centralizado e responsivo ===== */
+form {
+  max-width: 100%; /* Full-width em mobile */
+  margin: 0 auto var(--gap-base);
+  background: var(--cor-fundo-form);
+  padding: var(--padding-mobile) 15px; /* Compacto em mobile */
+  border-radius: var(--border-radius);
+  box-shadow: var(--sombra-suave);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-mobile); /* Gap menor em mobile */
+}
+
+@media (min-width: 768px) {
+  form {
+    max-width: 750px; /* Limite em desktop */
+    padding: 25px;
+    gap: var(--gap-base);
+  }
+}
+
+/* ===== 6. LABELS E LEGENDAS - Estilos para textos de orientação ===== */
+label,
+legend {
+  font-weight: bold;
+  color: var(--cor-texto);
+  margin-bottom: 5px;
+  font-size: var(--font-size-small);
+  display: block; /* Garante que labels fiquem acima dos inputs */
+}
+
+legend {
+  color: var(--cor-primaria); /* Destaque para títulos de seções */
+  padding: 0 5px;
+}
+
+/* ===== 7. INPUTS GERAIS, TEXTAREA E SELECTS - Estilos base para formulários ===== */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea,
+select {
+  width: 100%;
+  padding: var(--padding-mobile); /* Padding touch-friendly */
+  border-radius: var(--border-radius);
+  border: 1px solid var(--cor-borda);
+  font-size: var(--font-size-base);
+  transition: all 0.3s ease;
+  background: white; /* Fundo branco para contraste */
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--cor-primaria);
+  box-shadow: var(--sombra-foco);
+  outline: none; /* Remove outline padrão, mas mantém focus via shadow */
+}
+
+textarea {
+  resize: vertical; /* Permite redimensionar verticalmente */
+  min-height: 80px; /* Altura mínima para descrição */
+}
+
+select {
+  cursor: pointer; /* Indica interatividade */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); /* Seta customizada para compatibilidade */
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px; /* Espaço para seta */
+  appearance: none; /* Remove estilo nativo em alguns browsers */
+}
+
+@media (min-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="time"],
+  input[type="url"],
+  textarea,
+  select {
+    padding: var(--padding-base); /* Padding maior em desktop */
+  }
+}
+
+/* ===== 8. INPUT DE ARQUIVO CUSTOMIZADO - UX melhorada para upload ===== */
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-mobile);
+  margin-bottom: var(--gap-base);
+}
+
+.file-input-container input[type="file"] {
+  display: none; /* Oculta o input nativo para customização */
+}
+
+.file-input-label {
+  padding: var(--padding-mobile) 16px;
+  background-color: var(--cor-primaria);
+  color: white;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  flex: 0 0 auto; /* Não cresce, mantém tamanho fixo */
+  min-height: var(--min-height-btn); /* Touch-friendly */
+  white-space: nowrap; /* Evita quebra de linha */
+}
+
+.file-input-label:hover,
+.file-input-label:focus {
+  background-color: var(--cor-primaria-hover);
+  transform: scale(1.02); /* Escala sutil em hover */
+  box-shadow: var(--sombra-foco);
+}
+
+.file-name {
+  font-size: var(--font-size-small);
+  color: var(--cor-texto);
+  font-style: italic;
+  flex: 1; /* Ocupa espaço restante */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* "..." para nomes longos */
+  padding: var(--padding-mobile);
+  border: 1px dashed var(--cor-borda);
+  border-radius: var(--border-radius);
+  background: #f8f9fa; /* Fundo claro para destaque */
+  min-height: var(--min-height-btn); /* Alinha com label */
+}
+
+.error-message {
+  color: var(--cor-erro);
+  font-size: 0.85rem;
+  margin-top: 3px;
+  display: block;
+  min-height: 18px; /* Mantém espaço mesmo sem mensagem para evitar "pulos" */
+}
+
+@media (min-width: 768px) {
+  .file-input-container {
+    gap: var(--gap-base);
+  }
+
+  .file-input-label {
+    padding: var(--padding-base) 20px;
+  }
+
+  .file-name {
+    padding: var(--padding-base);
+  }
+}
+
+/* ===== 9. MAPA - Estilo responsivo para Leaflet ===== */
+#map {
+  height: 250px; /* Menor em mobile para caber na tela */
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: var(--gap-base);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra-suave); /* Sombra para destacar */
+}
+
+@media (min-width: 768px) {
+  #map {
+    height: 300px; /* Maior em desktop */
+  }
+}
+
+@media (min-width: 1024px) {
+  #map {
+    height: 350px; /* Ainda maior em telas grandes */
+  }
+}
+
+/* ===== 10. CHECKBOXES E FIELDSETS - Customização para listas de opções ===== */
+fieldset {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--border-radius);
+  padding: var(--padding-mobile) 15px; /* Compacto em mobile */
+  margin-bottom: var(--gap-base);
+  background: #f8f9fa; /* Fundo sutil para seção */
+}
+
+fieldset label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px; /* Espaçamento entre checkboxes */
+  margin-bottom: 8px;
+  font-weight: normal; /* Não bold para labels de checkboxes */
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  flex-wrap: wrap; /* Permite quebra em mobile se necessário */
+}
+
+fieldset input[type="checkbox"] {
+  appearance: none; /* Remove estilo nativo */
+  -webkit-appearance: none;
+  width: 18px; /* Tamanho touch-friendly (mín 16px) */
+  height: 18px;
+  border: 2px solid var(--cor-primaria);
+  border-radius: 4px; /* Quadrado arredondado */
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  background-color: white;
+  flex-shrink: 0; /* Não encolhe em flex */
+}
+
+fieldset input[type="checkbox"]:hover {
+  box-shadow: 0 0 5px var(--sombra-foco);
+}
+
+fieldset input[type="checkbox"]:checked {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+fieldset input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+fieldset input[type="checkbox"]:focus {
+  outline: 2px solid var(--cor-primaria); /* Focus visível */
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  fieldset {
+    padding: var(--padding-base) 20px;
+  }
+
+  fieldset label {
+    margin-right: 20px;
+    font-size: var(--font-size-base);
+  }
+
+  fieldset input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ===== 11. HORÁRIOS DE FUNCIONAMENTO - Grid responsivo para inputs de tempo ===== */
+.horarios-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Uma coluna em mobile */
+  gap: var(--gap-mobile);
+  margin-top: 5px;
+  align-items: center;
+}
+
+.horario {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-mobile);
+  flex-wrap: wrap; /* Permite quebra se tela muito pequena */
+}
+
+.horario label {
+  width: auto; /* Auto em mobile para flexibilidade */
+  font-weight: bold;
+  font-size: var(--font-size-small);
+  white-space: nowrap; /* Evita quebra no label */
+  min-width: 60px; /* Largura mínima para "Manhã:" */
+}
+
+.horario input[type="time"] {
+  flex: 1; /* Ocupa espaço disponível */
+  min-width: 80px; /* Largura mínima para input time */
+  padding: var(--padding-mobile);
+  border-radius: 6px;
+  border: 1px solid var(--cor-borda);
+  transition: all 0.3s ease;
+}
+
+.horario input[type="time"]:focus {
+  border-color: var(--cor-primaria);
+  box-shadow: var(--sombra-foco);
+  outline: none;
+}
+
+.horario span {
+  font-weight: bold;
+  color: var(--cor-texto);
+  white-space: nowrap; /* "às" não quebra */
+  font-size: var(--font-size-small);
+}
+
+@media (min-width: 768px) {
+  .horarios-container {
+    grid-template-columns: 1fr 1fr; /* Duas colunas em tablet/desktop */
+    gap: var(--gap-base);
+  }
+
+  .horario {
+    gap: var(--gap-base);
+  }
+
+  .horario label {
+    min-width: 70px;
+    font-size: var(--font-size-base);
+  }
+
+  .horario input[type="time"] {
+    padding: var(--padding-base);
+    min-width: 100px;
+  }
+}
+
+/* ===== 12. BOTÕES - Estilos gerais e submit (touch-friendly) ===== */
+button {
+  padding: var(--padding-mobile);
+  background-color: white;
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: var(--min-height-btn); /* Essencial para mobile/touch */      
+  font-weight: bold;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--cor-primaria);
+  color: white;
+  transform: translateY(-1px); /* Elevação sutil em hover */
+  box-shadow: var(--sombra-suave);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98); /* Feedback tátil */
+}
+
+button:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button[type="submit"] {
+  background-color: var(--cor-primaria);
+  color: white;
+  border: none;
+  margin-top: var(--gap-base);
+  font-size: 1.1em;
+  width: 100%; /* Sempre full-width para destaque */
+}
+
+button[type="submit"]:hover {
+  background-color: var(--cor-primaria-hover);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:disabled {
+  background-color: #6c757d;
+}
+
+@media (min-width: 768px) {
+  button:not([type="submit"]) {
+    width: auto; /* Botões secundários não full-width em desktop */
+  }
+
+  button[type="submit"] {
+    max-width: 200px; /* Limite em desktop para não esticar demais */
+    align-self: center; /* Centraliza se necessário */
+  }
+}
+
+/* ===== 13. RESPONSIVIDADE ABRANGENTE - Media queries para diferentes dispositivos ===== */
+/* Mobile pequeno (até 480px): Foco em touch e simplicidade */
+@media (max-width: 480px) {
+  body {
+    padding: 10px; /* Padding mínimo */
+  }
+
+  form {
+    padding: 15px;
+    gap: 10px;
+    margin: 10px auto;
+  }
+
+  header {
+    flex-direction: row;
+  }
+
+  header h1 {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  header .btn-retry {
+    border-radius: 50%;
+  }
+
+  header .btn-retry:hover,
+  header .btn-retry:focus {
+    background-color: #fff !important; /* Fundo branco forçado */
+    color: var(--cor-primaria) !important;
+    transform: scale(1.05);
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+  .file-input-container {
+    flex-direction: column; /* Stack label e nome em telas muito pequenas */
+    align-items: stretch;
+  }
+
+  .file-input-label {
+    justify-content: center;
+  }
+
+  fieldset label {
+    margin-right: 10px; /* Reduz espaçamento entre checkboxes */
+    font-size: 0.9rem;
+  }
+
+  #map {
+    height: 200px; /* Mapa menor em mobile pequeno */
+  }
+}
+
+/* ===============================
+   MENSAGENS DE ERRO
+=============================== */
+.error-message {
+  display: none; /* Oculta o span enquanto não houver erro */
+  color: #dc2626; /* vermelho */
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* Mostra apenas quando o JS colocar texto de erro */
+.error-message:not(:empty) {
+  display: block; /* aparece só quando tiver texto */
+}
