@@ -274,3 +274,39 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 6px rgba(30, 58, 138, 0.3);
   outline: none;
 }
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px; /* Padding mínimo */
+  }
+
+  form {
+    padding: 15px;
+    gap: 10px;
+    margin: 10px auto;
+  }
+
+  header {
+    flex-direction: row;
+  }
+
+  header h1 {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  header .btn-retry {
+    border-radius: 50%;
+  }
+
+  header .btn-retry:hover,
+  header .btn-retry:focus {
+    background-color: #fff !important; /* Fundo branco forçado */
+    color: var(--cor-primaria) !important;
+    transform: scale(1.05);
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+}

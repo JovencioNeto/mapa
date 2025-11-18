@@ -71,6 +71,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
       console.log("💾 Tabela 'empreendedores' criada ou já existia.")
     }
 
+    
+
+
     // Verifica e adiciona colunas faltantes (usando PRAGMA para schema)
     db.all("PRAGMA table_info(empreendedores)", (err, rows) => {
       if (err) {
@@ -293,6 +296,83 @@ app.delete("/api/empreendedores/:id", (req, res) => {
     })
   })
 })
+
+// ====================== TABELA DE USUÁRIOS (LOGIN / SENHAS) ======================
+    db.run(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        senha TEXT NOT NULL,
+        reset_token TEXT,
+        reset_expires DATETIME
+      )
+    `, (err) => {
+      if (err) console.error("Erro ao criar tabela de usuários:", err.message)
+      else console.log("Tabela 'usuarios' pronta.")
+    })
+
+    const crypto = require("crypto")
+
+// ====================== RECUPERAÇÃO DE SENHA ======================
+app.post("/api/recover-password", (req, res) => {
+  const { email } = req.body
+  if (!email) return res.status(400).json({ error: "Email é obrigatório." })
+
+  const token = crypto.randomBytes(32).toString("hex")
+  const expires = new Date(Date.now() + 1000 * 60 * 10) // expira em 10 minutos
+
+  db.run(
+    "UPDATE usuarios SET reset_token = ?, reset_expires = ? WHERE email = ?",
+    [token, expires.toISOString(), email],
+    function (err) {
+      if (err) return res.status(500).json({ error: "Erro ao gerar token." })
+
+      if (this.changes === 0)
+        return res.status(404).json({ error: "Email não encontrado." })
+
+      // AQUI você enviaria o email de verdade usando Nodemailer
+      console.log(`📩 Token de recuperação para ${email}: ${token}`)
+
+      res.json({
+        message: "Token gerado. (Em produção: enviado por email)",
+        token, // apenas para DEV
+      })
+    }
+  )
+})
+
+app.post("/api/update-password", (req, res) => {
+  const { token, novaSenha } = req.body
+
+  if (!token || !novaSenha)
+    return res.status(400).json({ error: "Token e nova senha são obrigatórios." })
+
+  db.get(
+    "SELECT id, reset_expires FROM usuarios WHERE reset_token = ?",
+    [token],
+    (err, user) => {
+      if (err) return res.status(500).json({ error: "Erro no banco" })
+      if (!user) return res.status(404).json({ error: "Token inválido" })
+
+      // Verifica expiração
+      if (new Date(user.reset_expires) < new Date()) {
+        return res.status(400).json({ error: "Token expirado" })
+      }
+
+      // Atualiza senha e limpa token
+      db.run(
+        "UPDATE usuarios SET senha = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?",
+        [novaSenha, user.id],
+        function (err) {
+          if (err) return res.status(500).json({ error: "Erro ao atualizar senha." })
+
+          res.json({ message: "Senha atualizada com sucesso!" })
+        }
+      )
+    }
+  )
+})
+
 
 // ====================== INICIAR SERVIDOR ======================
 const server = app.listen(PORT, () => {

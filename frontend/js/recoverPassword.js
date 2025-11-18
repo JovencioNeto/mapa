@@ -1,51 +1,48 @@
+// recoverPassword.js
+(() => {
+  const form = document.getElementById('recuperarForm');
+  const status = document.getElementById('status');
+  const btn = document.getElementById('btnEnviar');
 
-// Script mínimo: faz POST para a rota /api/recuperar-senha
-(function () {
-    const form = document.getElementById('recuperarForm')
-    const status = document.getElementById('status')
-    const btn = document.getElementById('btnEnviar')
+  function setStatus(msg = '', type = '') {
+    status.textContent = msg;
+    status.className = 'status ' + type;
+  }
 
-    function setStatus(message, type = 'info') {
-    status.textContent = message
-    status.className = 'status ' + type
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus('', '');
 
-    form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    setStatus('', '') // limpa
-    const email = form.email.value.trim()
+    const email = (form.email.value || '').trim();
     if (!email) {
-        setStatus('Informe um e-mail válido.', 'error')
-        return
+      setStatus('Informe um e-mail válido.', 'error');
+      return;
     }
 
-    btn.disabled = true
-    btn.textContent = 'Enviando...'
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
 
     try {
-        // Altere a URL abaixo para a rota do seu backend
-        const res = await fetch('/api/recuperar-senha', {
+      const res = await fetch('/api/recuperar-senha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
-        })
+      });
 
-        const contentType = res.headers.get('content-type') || ''
-        let data = {}
-        if (contentType.includes('application/json')) data = await res.json()
+      const data = await res.json().catch(() => ({}));
 
-        if (res.ok) {
-        setStatus(data.message || 'E-mail enviado! Verifique sua caixa de entrada.', 'success')
-        form.reset()
-        } else {
-        setStatus(data.error || 'Erro ao enviar e-mail. Tente novamente.', 'error')
-        }
+      if (res.ok) {
+        setStatus(data.message || 'Verifique seu e-mail (confira o spam).', 'success');
+        form.reset();
+      } else {
+        setStatus(data.error || 'Erro ao enviar o e-mail.', 'error');
+      }
     } catch (err) {
-        console.error(err)
-        setStatus('Erro de conexão. Verifique o servidor.', 'error')
+      console.error(err);
+      setStatus('Erro de conexão com o servidor.', 'error');
     } finally {
-        btn.disabled = false
-        btn.textContent = 'Enviar link de recuperação'
+      btn.disabled = false;
+      btn.textContent = 'Enviar link de recuperação';
     }
-    })
-})()
+  });
+})();
